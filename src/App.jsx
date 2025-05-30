@@ -1,27 +1,44 @@
-import axios from "axios";
-import { useEffect, useState } from "react";
+import { createBrowserRouter, RouterProvider, Navigate } from "react-router";
+import "./assets/css/index.css";
+import Login from "./pages/Login";
+import Dashboard from "./pages/Dashboard";
+import Profile from "./pages/Profile";
+import { useState } from "react";
+
+const isAuth = () => {
+  const token = localStorage.getItem("authToken");
+  return !!token;
+};
+
+function ProtectedRoute({ children }) {
+  return isAuth() ? children : <Navigate to="/login" replace />;
+}
 
 function App() {
-  const [users, setUsers] = useState([]);
-  useEffect(() => {
-    async function getUsers() {
-      await axios
-        .get("https://reqres.in/api/users", {
-          headers: {
-            "x-api-key": "reqres-free-v1",
-          },
-        })
-        .then((res) => setUsers(res.data.data))
-        .catch((err) => console.error(err));
-    }
-    getUsers();
-  }, []);
-  return (
-    <>
-      <h1>Claue</h1>
-      {users && users.map((user) => <p key={user.id}>{user.first_name}</p>)}
-    </>
-  );
+  const [contentEditable, setContentEditable] = useState(false);
+  const router = createBrowserRouter([
+    {
+      path: "/",
+      element: (
+        <ProtectedRoute>
+          <Dashboard setContentEditable={setContentEditable} />
+        </ProtectedRoute>
+      ),
+    },
+    {
+      path: "/users/:id",
+      element: (
+        <ProtectedRoute>
+          <Profile contentEditable={contentEditable} />
+        </ProtectedRoute>
+      ),
+    },
+    {
+      path: "/login",
+      element: <Login />,
+    },
+  ]);
+  return <RouterProvider router={router} />;
 }
 
 export default App;
