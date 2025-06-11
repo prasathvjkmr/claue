@@ -15,7 +15,7 @@ import {
 } from "@headlessui/react";
 import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
 
-export default function Dashboard({ setContentEditable }) {
+export default function Dashboard() {
   const [users, setUsers] = useState([]);
   const [page, setPage] = useState(1);
   const [dataPerPage, setDataPerPage] = useState(6);
@@ -88,7 +88,7 @@ export default function Dashboard({ setContentEditable }) {
                           className="size-8 p-1 bg-blue-200 hover:bg-blue-400 text-blue-900 hover:text-white transition m-2 border-2 border-blue-900 rounded cursor-pointer"
                           onClick={() => {
                             navigate(`/users/${user.id}`);
-                            setContentEditable(false);
+                            // setContentEditable(false);
                           }}
                         />
                       </li>
@@ -108,7 +108,7 @@ export default function Dashboard({ setContentEditable }) {
                           className="size-8 p-1 bg-green-200 hover:bg-green-400 text-green-900 hover:text-white transition m-2 border-2 border-green-900 rounded cursor-pointer"
                           onClick={() => {
                             navigate(`/users/${user.id}`);
-                            setContentEditable(true);
+                            // setContentEditable(true);
                           }}
                         />
                       </li>

@@ -1,27 +1,33 @@
-import { createBrowserRouter, RouterProvider, Navigate } from "react-router";
 import "./assets/css/index.css";
-import Login from "./pages/Login";
-import Dashboard from "./pages/Dashboard";
-import Profile from "./pages/Profile";
-import { useState } from "react";
+import { createBrowserRouter, RouterProvider, Navigate } from "react-router";
+import authService from "./services/authServices";
+import LoginForm from "./components/LoginForm";
+import Dashboard from "./pages/dashboard";
+import Profile from "./pages/profile";
 
-const isAuth = () => {
-  const token = localStorage.getItem("authToken");
-  return !!token;
+const ProtectedRoute = ({ children }) => {
+  const currentUser = authService.getCurrentUser();
+  if (!currentUser || !currentUser.token) {
+    return <Navigate to="/login" replace />;
+  }
+  return children;
 };
 
-function ProtectedRoute({ children }) {
-  return isAuth() ? children : <Navigate to="/login" replace />;
-}
-
 function App() {
-  const [contentEditable, setContentEditable] = useState(false);
   const router = createBrowserRouter([
     {
       path: "/",
       element: (
         <ProtectedRoute>
-          <Dashboard setContentEditable={setContentEditable} />
+          <Dashboard />
+        </ProtectedRoute>
+      ),
+    },
+    {
+      path: "/dashboard",
+      element: (
+        <ProtectedRoute>
+          <Dashboard />
         </ProtectedRoute>
       ),
     },
@@ -29,15 +35,16 @@ function App() {
       path: "/users/:id",
       element: (
         <ProtectedRoute>
-          <Profile contentEditable={contentEditable} />
+          <Profile />
         </ProtectedRoute>
       ),
     },
     {
       path: "/login",
-      element: <Login />,
+      element: <LoginForm />,
     },
   ]);
+
   return <RouterProvider router={router} />;
 }
 
